@@ -129,6 +129,14 @@ class restore_section_included_setting extends restore_section_generic_setting {
 class restore_section_userinfo_setting extends restore_section_generic_setting {}
 
 
+// Section summary restore settings
+
+/**
+ * section summary restore setting
+ */
+class restore_section_summary_setting extends restore_section_generic_setting {}
+
+
 // Activity backup settings
 
 /**
