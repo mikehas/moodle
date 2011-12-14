@@ -165,6 +165,17 @@ class restore_root_task extends restore_task {
         $filters->set_ui(new backup_setting_ui_checkbox($filters, get_string('rootsettingfilters', 'backup')));
         $filters->get_ui()->set_changeable($changeable);
         $this->add_setting($filters);
+        
+        // Define section summaries (true and changeable if mode is import )
+        $defaultvalue = false;                      // Safer default
+        $changeable = false;        
+        if (isset($rootsettings['section_summaries']) && $rootsettings['section_summaries']) { // Only enabled when importing
+            $defaultvalue = true;
+            $changeable = true;
+        }
+        $sectionsummaries = new restore_generic_setting('section_summaries', base_setting::IS_BOOLEAN, $defaultvalue);
+        $sectionsummaries->set_ui(new backup_setting_ui_checkbox($sectionsummaries, get_string('rootsettingsectionsummaries', 'backup')));
+        $this->add_setting($sectionsummaries);
 
         // Define comments (dependent of users)
         $defaultvalue = false;                      // Safer default
