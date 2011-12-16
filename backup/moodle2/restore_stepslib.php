@@ -1066,6 +1066,69 @@ class restore_section_structure_step extends restore_structure_step {
 }
 
 
+
+
+
+
+/**
+ * Structure step that will read the section.xml creating/updating section
+ * summaries as needed.
+ */
+class restore_section_summary_structure_step extends restore_structure_step {
+
+    protected function define_structure() {
+        $section = new restore_path_element('section', '/section');
+
+        // Apply for 'format' plugins optional paths at section level
+        $this->add_plugin_structure('format', $section);
+
+        return array($section);
+    }
+
+    public function process_section($data) {
+        global $DB;
+        $data = (object)$data;
+        $oldid = $data->id; // We'll need this later
+
+        $restorefiles = false;
+
+        // Look for the section
+        $section = new stdclass();
+        $section->course  = $this->get_courseid();
+        $section->section = $data->number;
+
+
+        // If section exists, update summary information
+        if ($secrec = $DB->get_record('course_sections', (array)$section)) {
+            $section->id = $secrec->id;
+            if (empty($secrec->name)) {
+                $section->name = $data->name;
+            }
+            if (empty($secrec->summary)) {
+                $section->summary = $data->summary;
+                $section->summaryformat = $data->summaryformat;
+                $restorefiles = true;
+            }
+            $DB->update_record('course_sections', $section);
+            $newitemid = $secrec->id;
+        }
+
+        // Annotate the section mapping, with restorefiles option if needed
+        $this->set_mapping('course_section', $oldid, $newitemid, $restorefiles);
+
+        // set the new course_section id in the task
+        $this->task->set_sectionid($newitemid);
+    }
+
+    protected function after_execute() {
+        // Add section related files, with 'course_section' itemid to match
+        $this->add_related_files('course', 'section', 'course_section');
+    }
+}
+
+
+
+
 /**
  * Structure step that will read the course.xml file, loading it and performing
  * various actions depending of the site/restore settings. Note that target
