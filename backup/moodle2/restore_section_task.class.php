@@ -76,7 +76,12 @@ class restore_section_task extends restore_task {
             $this->get_target() == backup::TARGET_EXISTING_DELETING || $this->get_setting_value('overwrite_conf') == true) {
             $this->add_step(new restore_section_structure_step('course_info', 'section.xml'));
         }
-
+        
+        // If summary_included is set to true, import the section summary.
+        if ($this->get_setting_value('summary_included')) {
+            $this->add_step(new restore_section_summary_structure_step('section_summary', 'section.xml'));
+        }
+        
         // At the end, mark it as built
         $this->built = true;
     }
@@ -182,5 +187,21 @@ class restore_section_task extends restore_task {
         $users->add_dependency($section_userinfo);
         // Look for "section_included" section setting
         $section_included->add_dependency($section_userinfo);
+        
+        // Define summary_included. Dependent of:
+        // - section_included setting
+        $settingname = $settingprefix . 'summary_included';
+        $defaultvalue   = false;                      // Safer default
+        // If the plan's section_summaries setting is set to true, 
+        // then import this section summary.
+        if($this->plan->get_mode() == backup::MODE_IMPORT) {
+            if ($this->plan->get_setting('section_summaries')->get_value()){
+               $defaultvalue = true;
+            }
+        }
+        $section_summary_included = new restore_section_summary_setting($settingname, base_setting::IS_BOOLEAN, $defaultvalue, base_setting::HIDDEN );
+        $section_included->add_dependency($section_summary_included);
+        $this->add_setting($section_summary_included);
+        
     }
 }

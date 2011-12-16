@@ -202,6 +202,7 @@ $string['rootsettinguserfiles'] = 'Include user files';
 $string['rootsettingactivities'] = 'Include activities';
 $string['rootsettingblocks'] = 'Include blocks';
 $string['rootsettingfilters'] = 'Include filters';
+$string['rootsettingsectionsummaries'] = 'Include section summaries';
 $string['rootsettingcomments'] = 'Include comments';
 $string['rootsettinguserscompletion'] = 'Include user completion details';
 $string['rootsettinglogs'] = 'Include course logs';

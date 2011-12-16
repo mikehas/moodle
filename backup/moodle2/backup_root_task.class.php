@@ -114,6 +114,13 @@ class backup_root_task extends backup_task {
         $filters->set_ui(new backup_setting_ui_checkbox($filters, get_string('rootsettingfilters', 'backup')));
         $this->add_setting($filters);
         $this->converter_deps($filters, $converters);
+        
+        // Define section summaries (if performing import)
+        if ($this->plan->get_mode() == backup::MODE_IMPORT) {
+            $sectionsummaries = new backup_generic_setting('section_summaries', base_setting::IS_BOOLEAN, true);
+            $sectionsummaries->set_ui(new backup_setting_ui_checkbox($sectionsummaries, get_string('rootsettingsectionsummaries', 'backup')));
+            $this->add_setting($sectionsummaries);
+        }
 
         // Define comments (dependent of users)
         $comments = new backup_comments_setting('comments', base_setting::IS_BOOLEAN, true);
