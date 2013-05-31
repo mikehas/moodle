@@ -519,9 +519,14 @@ class mysqli_native_moodle_database extends moodle_database {
 
         $sql = "SELECT column_name, data_type, character_maximum_length, numeric_precision,
                        numeric_scale, is_nullable, column_type, column_default, column_key, extra
-                  FROM information_schema.columns
-                 WHERE table_name = '" . $this->prefix.$table . "'
-                       AND table_schema = '" . $this->dbname . "'
+                  FROM 
+                      ( SELECT column_name, data_type, character_maximum_length, numeric_precision,
+		         numeric_scale, is_nullable, column_type, column_default, column_key, extra
+		         , ordinal_position 
+                      FROM information_schema.columns
+                      WHERE table_name = '" . $this->prefix.$table . "'
+                         AND table_schema = '" . $this->dbname . "'
+                      ) performance_sub_query
               ORDER BY ordinal_position";
         $this->query_start($sql, null, SQL_QUERY_AUX);
         $result = $this->mysqli->query($sql);
