@@ -278,3 +278,8 @@ define('GRADE_FEEDBACK_FILEAREA', 'feedback');
  * The file area to store the associated grade_grades_history feedback files.
  */
 define('GRADE_HISTORY_FEEDBACK_FILEAREA', 'historyfeedback');
+
+/**
+ * Epsilon value used when comparing float values.
+ */
+define('GRADE_FLOAT_EPSILON', .000001);
